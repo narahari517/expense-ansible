@@ -5,6 +5,12 @@
     sql_password: "ExpenseApp@1"
     mysql_host: "mysql.nhari.online"
   tasks:
+  - name: install pymysql
+    ansible.builtin.pip:
+      name:
+      - PyMySQL
+      executable: pip3.9
+      
   - name: install mysql
     ansible.builtin.package:
       name: mysql
