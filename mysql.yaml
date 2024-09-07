@@ -1,14 +1,29 @@
 - name: mysql configuration
   hosts: mysql
   become: yes
+  vars:
+    sql_password: "ExpenseApp@1"
+    mysql_host: "mysql.nhari.online"
   tasks:
-  - name: install mysql server
+  - name: install mysql
     ansible.builtin.package:
-      name: mysql-server
-      state: present
-
-  - name: start mysql server
+      name: mysql
+      state: installed
+  
+  - name: start mysql
     ansible.builtin.service:
       name: mysqld
       state: started
       enabled: yes
+
+  - name: connect mysql
+    community.mysql.mysql_info:
+      login_user: root
+      login_password: "{{ sql_password }}"
+      login_host: "{{ mysql_host }}"
+    register: mysql_info
+
+  - name: print the output
+    ansible.builtin.debug:
+      msg: " {{ mysql_info }}"
+
