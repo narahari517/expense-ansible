@@ -2,7 +2,7 @@
   hosts: mysql
   become: yes
   vars:
-    sql_password: "ExpenseApp@1"
+    sql_root_password: "ExpenseApp@1"
     mysql_host: "mysql.nhari.online"
   tasks:
   - name: install pymysql
@@ -11,21 +11,21 @@
       - PyMySQL
       executable: pip3.9
 
-  - name: install mysql
+  - name: install mysql server
     ansible.builtin.package:
-      name: mysql
-      state: installed
+      name: mysql-server
+      state: present
   
-  - name: start mysql
+  - name: start mysql server
     ansible.builtin.service:
       name: mysqld
       state: started
       enabled: yes
 
-  - name: connect mysql
+  - name: connect mysql server
     community.mysql.mysql_info:
       login_user: root
-      login_password: "{{ sql_password }}"
+      login_password: "{{ sql_root_password }}"
       login_host: "{{ mysql_host }}"
     ignore_errors: true
     register: mysql_info
@@ -33,4 +33,8 @@
   - name: print the output
     ansible.builtin.debug:
       msg: " {{ mysql_info }}"
+
+  # - name: setup mysql root password
+  #   ansible.builtin.command: mysql_secure_installation --set-root-pass {{ sql_root_password }}
+  #   when: mysql_info.
 
