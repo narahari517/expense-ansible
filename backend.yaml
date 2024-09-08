@@ -55,11 +55,17 @@
       - PyMySQL
       executable: pip3.9
 
-  - name: connect mysql server
+  - name: import mysql data
     community.mysql.mysql_db:
       login_user: root
       login_password: "{{ sql_root_password }}"
       login_host: "{{ mysql_host }}"
       target: /app/schema/backend.sql
-      state: dump
+      state: import
       name: all
+  
+  - name: deamon reload/
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+      state: restarted
+      name: backend
